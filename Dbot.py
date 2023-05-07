@@ -388,12 +388,6 @@ async def embedbutton(inter):
     await channel.send(embed=button_embed, view = view)
 
 
-#нужно дать возможность боту делать очередь из заявок!!!
-#нужно дать возможность боту делать очередь из заявок!!!
-#нужно дать возможность боту делать очередь из заявок!!!
-#нужно дать возможность боту делать очередь из заявок!!!
-#нужно дать возможность боту делать очередь из заявок!!!
-
 @bot.slash_command(description="Тестовая команда для проверки работы команд")
 async def bottestping(ctx, rol: disnake.Role):
     await ctx.send(rol.id)
@@ -418,82 +412,3 @@ async def registration(inter: disnake.CommandInteraction, yourname: str, forname
     role = inter.guild.get_role(int(1101149791829889134))
     await inter.user.add_roles(role)
     userfile.close()
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
