@@ -3,6 +3,7 @@ import disnake
 from disnake.ext import commands
 from disnake import TextInputStyle
 from disnake.interactions import MessageInteraction
+# from Dbotclasses import OffersModal
 
 bot = commands.Bot(command_prefix="!!", help_command=None, activity=disnake.Game("Грибную Партию"),intents=disnake.Intents.all(), status=disnake.Status.idle)
 
@@ -237,68 +238,6 @@ async def lscom(inter, titl, message, us):
     await user.send("👀")
     await user.send(embed=embedls)
 
-class MyModal(disnake.ui.Modal):
-    def __init__(self):
-        components = [
-            disnake.ui.TextInput(
-                label="Ник в майнкрафте",
-                placeholder="Ваш ник в майнкрафте",
-                custom_id="ваш ник",
-                style=TextInputStyle.short,
-                max_length=50,
-            ),
-            disnake.ui.TextInput(
-                label="Ник на атерносе",
-                placeholder="Ваш ник на сайте atenos.org",
-                custom_id="атернос",
-                style=TextInputStyle.short,
-            ),
-            disnake.ui.TextInput(
-                label="Ваш возраст",
-                placeholder="Ваш реальный возраст",
-                custom_id="возраст",
-                style=TextInputStyle.short,
-            ),
-            disnake.ui.TextInput(
-                label="Почему Вы хотите играть на нашем сервере?",
-                placeholder="Почему?",
-                custom_id="почему",
-                style=TextInputStyle.paragraph,
-            ),
-            disnake.ui.TextInput(
-                label="Что Вы будете делать?",
-                placeholder="Чем будете заниматься?",
-                custom_id="занятия",
-                style=TextInputStyle.paragraph,
-            )
-        ]
-        super().__init__(
-            title="Заявка на сервер от",
-            custom_id="emb_create",
-            components=components,
-        )
-
-    async def callback(self, inter: disnake.ModalInteraction):
-        global buttnuser
-        view = newbieconfirm()
-        buttonuser = bot.get_user(int(buttnuser[0]))
-        user = bot.get_user(int(581348510830690344))
-        # userwrote = bot.get_user(int(ctxus))
-        embed = disnake.Embed(title="Новая заявка", description=f"<@{buttnuser[0]}> написал заявку! Принять или отказать?", color=0x00a2ff)
-        # channelg = bot.get_channel(int(1101190863826210818))
-        for key, value in inter.text_values.items():
-            embed.add_field(
-                name=key.capitalize(),
-                value=value[:1024],
-                inline=False,
-            )
-        # await user.send(embed=embed)
-        # await user.send(f' <@{buttnuser}> написал заявку!')
-        await user.send(embed=embed, view=view)
-        # await user.send(f' <@{buttnuser}> написал заявку! Принять или отказать?', view=view)
-        await inter.response.send_message(f"<@{buttnuser[0]}>, заявка отправлена!", delete_after=5)
-        await buttonuser.send(f"Твоя заявка на рассмотрении, <@{buttnuser[0]}>")
-
 # @bot.slash_command(guild_ids=[1097125882876923954, 1084069446051704844], name = "заявка")
 # async def newembed(inter: disnake.AppCmdInter):
 #     """Напиши заявку!"""
@@ -308,84 +247,6 @@ class MyModal(disnake.ui.Modal):
 #     # ctxus = inter.user.id
 #     await inter.response.send_modal(modal=MyModal())
 
-
-class newbieconfirm(disnake.ui.View):
-
-    def __init__(self):
-          super().__init__(timeout=None)
-          self.value = Optional[bool]
-
-    @disnake.ui.button(label="Принять", style=disnake.ButtonStyle.green, emoji="✔️")
-    async def newbieconfirm(self, button: disnake.ui.Button, inter: disnake.CommandInteraction):
-        global newmember, buttnuser
-        channelnewbie = bot.get_channel(int(1084084491255025694))
-        embed = disnake.Embed(
-              title="Новый игрок!",
-              description=(
-              f"Игрок <@{buttnuser[0]}> получил проходку на сервер!\n"
-              "Хорошей игры на сервере!\n"
-              ),
-              color=0x00a2ff
-           )
-        newmember = bot.get_user(int(buttnuser[0]))
-        # await newmember.get_role(role)
-        # view = NewBieFinalConfirm()
-        await channelnewbie.send(embed=embed)
-        buttnuser.pop[0]
-        # await newmember.send("Ты получаешь проходку на сервер! Нажми на кнопку для подтверждения входа!", view=view)
-        await inter.response.send_message(f"<@{buttnuser[0]}>, получает проходку!")
-        self.value = True
-        self.stop()
-    
-    @disnake.ui.button(label="Отказать", style=disnake.ButtonStyle.red, emoji="👎")
-    async def newbiecancel(self, button: disnake.ui.Button, inter: disnake.CommandInteraction):
-        global buttnuser
-        channelnewbie = bot.get_channel(int(1084084491255025694))
-        embed = disnake.Embed(
-            title="Отказ в заявке",
-            description=(
-            f"Игроку <@{buttnuser[0]}> было отказано в проходе на сервер!\n"
-            "Попытай удачу снова через время!"
-            ),
-            color=0x00a2ff
-        )
-        await inter.response.send_message(f"<@{buttnuser[0]}>, отказано в проходе на сервер!")
-        await channelnewbie.send(embed=embed)
-        buttnuser.pop[0]
-        self.value = False
-        self.stop()
-
-class Confirm(disnake.ui.View): 
-
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.value = Optional[bool]
-
-    @disnake.ui.button(label="Заявка", style=disnake.ButtonStyle.green, emoji="✍️")
-    async def confirm(self, button: disnake.ui.Button, inter: disnake.CommandInteraction):
-        self.value = True
-        await inter.response.send_modal(modal=MyModal())
-        # self.stop()
-
-    async def interaction_check(self, interaction: MessageInteraction):
-        global buttnuser
-        buttnuser = []
-        buttnuser.append(interaction.user.id) 
-        print(buttnuser[0,1,2,3])
-        return await super().interaction_check(interaction)
-
-
-@bot.slash_command()
-async def embedbutton(inter):
-    view = Confirm()
-    channel = bot.get_channel(int(1084084491255025694))
-    button_embed = disnake.Embed(
-        title="Новый способ писать заявки!",
-        description="Если бот в сети, то вам для написания заявки нужно нажать кнопку **✍️Заявка**",
-        color=0x03fc6b
-    )
-
-    await channel.send(embed=button_embed, view = view)
 
 
 @bot.slash_command(description="Тестовая команда для проверки работы команд")
@@ -403,7 +264,7 @@ async def registration(inter: disnake.CommandInteraction, yourname: str, forname
     membernew = inter.user.id
     owner = bot.get_user(int(581348510830690344))
     newmembermention = bot.get_user(int(membernew))
-    with open(r'C:\Users\meljn\users.txt', 'a+', encoding='utf-8') as userfile:
+    with open(r'users.txt', 'a+', encoding='utf-8') as userfile:
         userfile.write(f"{yourname} {forname} {form} {newmembermention} \n")
     await owner.send(f"{yourname} {forname} {form} <@{membernew}> \n")
     userfile.close()
@@ -412,3 +273,89 @@ async def registration(inter: disnake.CommandInteraction, yourname: str, forname
     role = inter.guild.get_role(int(1101149791829889134))
     await inter.user.add_roles(role)
     userfile.close()
+
+class OffersModal(disnake.ui.Modal):
+    def __init__(self):
+        components_offers = [
+            disnake.ui.TextInput(
+                label="Опиши своё предложение",
+                placeholder="Опиши своё предложение максимально подробно",
+                custom_id="описани",
+                style=TextInputStyle.paragraph,
+                max_length=300,
+            ),
+            disnake.ui.TextInput(
+                label="Оцени своё предложение",
+                placeholder="?/10",
+                custom_id="оценка",
+                style=TextInputStyle.short,
+            ),
+        ]
+        super().__init__(
+            title="Create Offer",
+            custom_id="create_offer",
+            components=components_offers,
+        )
+
+    # global offerwriter
+    async def callback(self, inter: disnake.ModalInteraction):
+        embed = disnake.Embed(
+            title="Новое предложение",
+            description=(f"<@{offerwriter}> написал предложение!"),
+            color=0x8400ff
+            )
+        
+        for key, value in inter.text_values.items():
+            embed.add_field(
+                name=key.capitalize(),
+                value=value[:1024],
+                inline=False,
+            )
+        
+        authorbot = bot.get_user(581348510830690344)
+
+        await authorbot.send(embed=embed)
+        await inter.response.send_message(f" <@{offerwriter}>, предложение отправлено!", delete_after=5)
+
+
+class OfferButton(disnake.ui.View): 
+
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.value = Optional[bool]
+
+    @disnake.ui.button(label="Предложить", style=disnake.ButtonStyle.green, emoji="✍️")
+    async def offerbutt(self, button: disnake.ui.Button, inter: disnake.CommandInteraction):
+        self.value = True
+        await inter.response.send_modal(modal=OffersModal())
+
+    async def interaction_check(self, interaction: MessageInteraction):
+        
+        global offerwriter
+        offerwriter = interaction.user.id
+
+        return await super().interaction_check(interaction)
+
+@bot.slash_command(guild_ids=[1097125882876923954])
+async def offernotanon(inter):
+    view = OfferButton()
+    channel = bot.get_channel(int(1102629280615252029))
+    button_embed = disnake.Embed(
+        title="Напиши предложение для нашей школы!",
+        description='Если бот в сети, то ты можешь написать предложение президенту школы используя кнопку "Предложить" ',
+        color=0x03fc6b
+    )
+    
+    await channel.send(embed=button_embed, view = view)
+
+@bot.slash_command(guild_ids=[1097125882876923954])
+async def offeranon(inter):
+    view = OfferButton()
+    channelanon = bot.get_channel(int(1102629326236684338))
+    button_embed = disnake.Embed(
+        title="Напиши анонимное предложение для нашей школы!",
+        description='Если бот в сети, то ты можешь написать анонимное предложение президенту школы используя кнопку "Предложить" ',
+        color=0x03fc6b
+    )
+    
+    await channelanon.send(embed=button_embed, view = view)
