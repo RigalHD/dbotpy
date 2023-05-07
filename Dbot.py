@@ -497,6 +497,3 @@ async def registration(inter: disnake.CommandInteraction, yourname: str, forname
 
 
 
-
-
-bot.run("MTA4ODQ3NzIwNTI5MTYwNjA4OA.G39TYp.rtpogLMClCmIl9OPOK3xhJzm5sCJbDsfbaFnBM")
