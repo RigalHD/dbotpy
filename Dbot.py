@@ -258,22 +258,6 @@ async def bottestroleinfo(ctx, member: disnake.Member, *, role: disnake.Role):
     # rle = disnake.Role(айди роли) команда для выдачи роли
     await member.add_roles(role)
 
-
-@bot.slash_command(guild_ids=[1097125882876923954], name="reg", description="Регистарция")
-async def registration(inter: disnake.CommandInteraction, yourname: str, forname: str, form: str):
-    membernew = inter.user.id
-    owner = bot.get_user(int(581348510830690344))
-    newmembermention = bot.get_user(int(membernew))
-    with open(r'users.txt', 'a+', encoding='utf-8') as userfile:
-        userfile.write(f"{yourname} {forname} {form} {newmembermention} \n")
-    await owner.send(f"{yourname} {forname} {form} <@{membernew}> \n")
-    userfile.close()
-    # with open(r'C:\Users\meljn\users.txt', 'r', encoding='utf-8') as userfilef:
-    #     await user.send(userfilef.read()) 
-    role = inter.guild.get_role(int(1101149791829889134))
-    await inter.user.add_roles(role)
-    userfile.close()
-
 class OffersModal(disnake.ui.Modal):
     def __init__(self):
         components_offers = [
@@ -289,6 +273,7 @@ class OffersModal(disnake.ui.Modal):
                 placeholder="?/10",
                 custom_id="оценка",
                 style=TextInputStyle.short,
+                max_length=300,
             ),
         ]
         super().__init__(
@@ -359,3 +344,26 @@ async def offeranon(inter):
     )
     
     await channelanon.send(embed=button_embed, view = view)
+
+@bot.slash_command(
+        guild_ids=[1097125882876923954, 1102624788582760498],
+        name="регистрация",
+        description="Регистарция. Регистрацию можно проводить лишь раз"
+        )
+@commands.has_any_role(int(1104761162945527939))
+async def registration(inter: disnake.CommandInteraction, имя: str, фамилия: str, класс: str):
+    membernew = inter.user.id
+    owner = bot.get_user(int(581348510830690344))
+    newmembermention = bot.get_user(int(membernew))
+    with open(r'C:\Users\meljn\OneDrive\Документы\testbot\users.txt', 'a+', encoding='utf-8') as userfile:
+        userfile.write(f"{имя} {фамилия} {класс} {newmembermention} \n")
+    await owner.send(f"{имя} {фамилия} {класс} <@{membernew}> \n")
+    await inter.response.send_message(f"Успешная регистрация, <@{membernew}>!", delete_after=5)
+    userfile.close()
+    # with open(r'C:\Users\meljn\users.txt', 'r', encoding='utf-8') as userfilef:
+    #     await user.send(userfilef.read()) 
+    role_not_authorized = inter.guild.get_role(int(1104761162945527939))
+    role_authorized = inter.guild.get_role(int(1104761018124619826))
+    await inter.user.remove_roles(role_not_authorized)
+    await inter.user.add_roles(role_authorized)
+    userfile.close()
