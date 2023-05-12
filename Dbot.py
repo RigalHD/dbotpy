@@ -1,3 +1,4 @@
+import sqlite3
 from typing import Optional
 import disnake
 from disnake.ext import commands
@@ -360,10 +361,28 @@ async def registration(inter: disnake.CommandInteraction, имя: str, фами�
     await owner.send(f"{имя} {фамилия} {класс} <@{membernew}> \n")
     await inter.response.send_message(f"Успешная регистрация, <@{membernew}>!", delete_after=5)
     userfile.close()
-    # with open(r'C:\Users\meljn\users.txt', 'r', encoding='utf-8') as userfilef:
-    #     await user.send(userfilef.read()) 
     role_not_authorized = inter.guild.get_role(int(1104761162945527939))
     role_authorized = inter.guild.get_role(int(1104761018124619826))
     await inter.user.remove_roles(role_not_authorized)
     await inter.user.add_roles(role_authorized)
     userfile.close()
+
+    values = (имя, фамилия, класс, 0, membernew)
+
+    with sqlite3.connect("server.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+            login TEXT,
+            password TEXT,
+            clas TEXT,
+            cash BIGINT,
+            discordaccountid BIGINT
+        )""")
+
+        cursor.execute("INSERT INTO users(login, password, clas, cash, discordaccountid) VALUES (?, ?, ?, ?, ?)", values)
+
+        db.commit()
+
+        for value in cursor.execute("SELECT * FROM users"):
+            print(value)
