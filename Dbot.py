@@ -373,6 +373,7 @@ async def registration(inter: disnake.CommandInteraction, имя: str, фами�
         cursor = db.cursor()
 
         cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+            in_db_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
             login TEXT,
             password TEXT,
             clas TEXT,
