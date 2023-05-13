@@ -4,18 +4,19 @@ import disnake
 from disnake.ext import commands
 from disnake import TextInputStyle
 from disnake.interactions import MessageInteraction
-# from Dbotclasses import OffersModal
 
-bot = commands.Bot(command_prefix="!!", help_command=None, activity=disnake.Game("Грибную Партию"),intents=disnake.Intents.all(), status=disnake.Status.idle)
-
-cens_words = ["rtest", "hellowein", "таракан", "хуй", "хуй", "xуй", "xyй", "хyй", "hui", "brook"]
-#specialcens_words = ["brook"]
-
+bot = commands.Bot(
+    command_prefix="!!", help_command=None,
+    activity=disnake.Game("Грибную Партию"),
+    intents=disnake.Intents.all(),
+    status=disnake.Status.idle
+    )
 
 @bot.event
 async def on_ready():
     print(f"Bot {bot.user} is ready to work!")
     
+cens_words = ["rtest", "hellowein", "таракан", "хуй", "хуй", "xуй", "xyй", "хyй", "hui", "brook"]
 
 # @bot.event
 # async def on_member_join(member):
@@ -55,6 +56,7 @@ async def on_message(message):
         #     description=f" '{inter.prefix}{inter.command.name}' Example: /kick @klauncher заколебал",
         #     color=0x0066ff 
 #         ))
+
 
 @bot.command(name="rmessage")
 @commands.has_permissions(administrator=True)
@@ -99,6 +101,59 @@ async def ncalc(inter, x: int, z: int):
         description=result,
         color=0x0066ff
     ))
+
+# @bot.slash_command()
+# @commands.has_permissions(administrator=True)
+# async def sent(inter, messag, c_id):
+#     channelg = bot.get_channel(int(c_id))
+#     await channelg.send(messag)
+
+# @bot.slash_command()
+# async def samck(inter):
+
+
+@bot.slash_command(guild_ids=[1051049677207912468, 889494053345968198], name="пропуска", description="Список людей, с доступом на территорию ГП")
+async def propuski(inter):
+    embedspisok =  disnake.Embed(
+        title="Список людей, у которых есть пропуск на территорию ГП",
+        description=(
+        "**meljnichenko** - бессрочно - член ГП  "
+        "**\nStandPuch** - бессрочно - член ГП  "
+        "**\nHellowein** - бессрочно - член ГП  "
+        "**\nabjorka** - бессрочно - член ГП  "
+        "**\nthetopir** - бессрочно - член ГП  "
+        "**\nSas-Pido-ra-kin** - бессрочно - член ГП  "
+        "**\nmr_KLauncher** - бессрочно - выдано Standpuch  "
+        "**\nz1mp1e** - бессрочный пропуск - выдано StandPuch "
+        ),   
+        color=0x00a2ff
+        )
+    await inter.send(embed=embedspisok)
+
+# @bot.slash_command()
+# async def kickvoice(ctx, member: disnake.Member):
+#     await member.voice.channel.delete
+
+@bot.slash_command(guild_ids=[1097125882876923954], name = "fullembed")
+@commands.has_permissions(administrator=True)
+async def fullembed(ctx, name, description, embedauthor, iconauthorurl, authorurl, footertext, footericonurl, imageulr, channelid):
+    channel = bot.get_channel(int(channelid))
+    embedf=disnake.Embed(
+        title=name,
+        description=description,
+        color=0x00a2ff,
+    )
+    embedf.set_author(
+        name=embedauthor,
+        url=authorurl,
+        icon_url=iconauthorurl,
+    )
+    embedf.set_footer(
+        text=footertext,
+        icon_url=footericonurl,
+    )
+    embedf.set_image(url=imageulr)
+    await channel.send(embed=embedf)
 
 @bot.slash_command(guild_ids=[1097125882876923954], name = "embed")
 @commands.has_permissions(administrator=True)
@@ -156,60 +211,6 @@ async def embed(ctx, name, description, color, channel):
     
     await channel2.send(embed=embed2)
 
-# @bot.slash_command()
-# @commands.has_permissions(administrator=True)
-# async def sent(inter, messag, c_id):
-#     channelg = bot.get_channel(int(c_id))
-#     await channelg.send(messag)
-
-
-@bot.slash_command(guild_ids=[1097125882876923954], name = "fullembed")
-@commands.has_permissions(administrator=True)
-async def fullembed(ctx, name, description, embedauthor, iconauthorurl, authorurl, footertext, footericonurl, imageulr, channelid):
-    channel = bot.get_channel(int(channelid))
-    embedf=disnake.Embed(
-        title=name,
-        description=description,
-        color=0x00a2ff,
-    )
-    embedf.set_author(
-        name=embedauthor,
-        url=authorurl,
-        icon_url=iconauthorurl,
-    )
-    embedf.set_footer(
-        text=footertext,
-        icon_url=footericonurl,
-    )
-    embedf.set_image(url=imageulr)
-    await channel.send(embed=embedf)
-
-# @bot.slash_command()
-# async def samck(inter):
-
-
-@bot.slash_command(guild_ids=[1051049677207912468, 889494053345968198], name="пропуска", description="Список людей, с доступом на территорию ГП")
-async def propuski(inter):
-    embedspisok =  disnake.Embed(
-        title="Список людей, у которых есть пропуск на территорию ГП",
-        description=(
-        "**meljnichenko** - бессрочно - член ГП  "
-        "**\nStandPuch** - бессрочно - член ГП  "
-        "**\nHellowein** - бессрочно - член ГП  "
-        "**\nabjorka** - бессрочно - член ГП  "
-        "**\nthetopir** - бессрочно - член ГП  "
-        "**\nSas-Pido-ra-kin** - бессрочно - член ГП  "
-        "**\nmr_KLauncher** - бессрочно - выдано Standpuch  "
-        "**\nz1mp1e** - бессрочный пропуск - выдано StandPuch "
-        ),   
-        color=0x00a2ff
-        )
-    await inter.send(embed=embedspisok)
-
-# @bot.slash_command()
-# async def kickvoice(ctx, member: disnake.Member):
-#     await member.voice.channel.delete
-
 @bot.slash_command(guild_ids=[1097125882876923954])
 async def voicedel(ctx, voice):
     vchannel = bot.get_channel(int(voice))
@@ -239,17 +240,6 @@ async def lscom(inter, titl, message, us):
     await user.send("👀")
     await user.send(embed=embedls)
 
-# @bot.slash_command(guild_ids=[1097125882876923954, 1084069446051704844], name = "заявка")
-# async def newembed(inter: disnake.AppCmdInter):
-#     """Напиши заявку!"""
-#     # global channelg, embedtitle
-#     # embedtitle = mdwembedtitle
-#     # global ctxus
-#     # ctxus = inter.user.id
-#     await inter.response.send_modal(modal=MyModal())
-
-
-
 @bot.slash_command(description="Тестовая команда для проверки работы команд")
 async def bottestping(ctx, rol: disnake.Role):
     await ctx.send(rol.id)
@@ -258,6 +248,8 @@ async def bottestping(ctx, rol: disnake.Role):
 async def bottestroleinfo(ctx, member: disnake.Member, *, role: disnake.Role):
     # rle = disnake.Role(айди роли) команда для выдачи роли
     await member.add_roles(role)
+
+
 
 class OffersModal(disnake.ui.Modal):
     def __init__(self):
@@ -278,7 +270,7 @@ class OffersModal(disnake.ui.Modal):
             ),
         ]
         super().__init__(
-            title="Create Offer",
+            title="Напиши предложение",
             custom_id="create_offer",
             components=components_offers,
         )
@@ -375,15 +367,59 @@ async def registration(inter: disnake.CommandInteraction, имя: str, фами�
         cursor.execute("""CREATE TABLE IF NOT EXISTS users(
             in_db_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
             login TEXT,
-            password TEXT,
+            login_forname TEXT,
             clas TEXT,
             cash BIGINT,
             discordaccountid BIGINT
         )""")
 
-        cursor.execute("INSERT INTO users(login, password, clas, cash, discordaccountid) VALUES (?, ?, ?, ?, ?)", values)
+        cursor.execute("INSERT INTO users(login, login_forname, clas, cash, discordaccountid) VALUES (?, ?, ?, ?, ?)", values)
 
         db.commit()
 
+        # cursor.execute('SELECT COUNT(*) FROM users WHERE login_forname = ?', (фамилия,))
+        # result = cursor.fetchone()
+
+        # Если количество найденных записей больше 0, значит имя уже существует в базе данных
+        # if result[0] > 0:
+        #     await inter.response.send_message('Фамилия уже есть в базе данных. Обратитесь в поддержку')
+        # else:
+        #     print('Имя не найдено в базе данных')
+
         for value in cursor.execute("SELECT * FROM users"):
             print(value)
+
+@bot.slash_command(guild_ids=[1051049677207912468], name="репутация", description="Узнай сколько у тебя SocialCredit")
+async def socialcredit(inter, member: disnake.Member):
+    with sqlite3.connect("servertochka.db") as dbt:
+        cursortochka = dbt.cursor()
+        mbr = str(member)
+        cursortochka.execute('SELECT COUNT(*) FROM socialcredits WHERE discordaccount = ?', (mbr,))
+        result = cursortochka.fetchone()
+        print(member)
+        for value in cursortochka.execute("SELECT * FROM socialcredits"):
+            print(value)
+
+@bot.slash_command(guild_ids=[1097125882876923954, 1051049677207912468])
+async def socialcreditset(inter, member: disnake.Member, credits: int):
+    global cursortochka, dbt
+    with sqlite3.connect("servertochka.db") as dbt:
+        cursortochka = dbt.cursor()
+        mbr = str(member)
+        values = (mbr, 0)
+
+        cursortochka.execute("""CREATE TABLE IF NOT EXISTS socialcredits(
+            in_db_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            discordaccount TEXT,
+            scredits BIGINT
+        )""")
+        print(mbr)
+        #Доделать
+        cursortochka.execute("INSERT INTO socialcredits(discordaccount, scredits) VALUES (?, ?)", values)
+
+        dbt.commit()
+
+
+        for value in cursortochka.execute("SELECT * FROM socialcredits"):
+            print(value)
+
