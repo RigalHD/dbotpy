@@ -70,10 +70,10 @@ async def rmessage(ctx, tl, ms):
 
 @bot.slash_command()
 @commands.has_permissions(administrator=True)
-async def rkick(inter, member: disnake.Member, *, reason="Нарушение правил."):
+async def rkick(inter: disnake.CommandInteraction, member: disnake.Member, *, reason="Нарушение правил."):
     await inter.send(f"чела {member.mention} кикнул {inter.author.mention}", delete_after=5) 
     await member.kick(reason=reason)
-    await inter.message.delete()
+    await inter.delete_original_message()
 
 @bot.slash_command()
 async def calc(inter, a: int, oper: str, b: int):
@@ -102,11 +102,11 @@ async def ncalc(inter, x: int, z: int):
         color=0x0066ff
     ))
 
-# @bot.slash_command()
-# @commands.has_permissions(administrator=True)
-# async def sent(inter, messag, c_id):
-#     channelg = bot.get_channel(int(c_id))
-#     await channelg.send(messag)
+@bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
+async def msg(inter: disnake.CommandInteraction, msg, c_id):
+    channelg = bot.get_channel(int(c_id))
+    await channelg.send(msg)
 
 # @bot.slash_command()
 # async def samck(inter):
@@ -155,74 +155,50 @@ async def fullembed(ctx, name, description, embedauthor, iconauthorurl, authorur
     embedf.set_image(url=imageulr)
     await channel.send(embed=embedf)
 
+
 @bot.slash_command(guild_ids=[1097125882876923954], name = "embed")
 @commands.has_permissions(administrator=True)
-async def embed(ctx, name, description, color, channel):
-    
+async def embed(ctx, name, description, color, channel):    
     channel2 = bot.get_channel(int(channel))
+    
     if color.lower() == "синий":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0x00a2ff
-    )
+        clr=hex(0x00a2ff)
         
     elif color.lower() == "красный":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0xff0000
-    )
+        clr=0xff0000
         
     elif color.lower() == "зелёный":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0x135c19
-    )
+        clr=0x135c19
         
     elif color.lower() == "жёлтый":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0xffff00
-    )
-    
+        clr=0xffff00
+
     elif color.lower() == "фиолетовый":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0x8400ff
-    )
+        clr=0x8400ff
     
     elif color.lower() == "чёрный":
-        embed2=disnake.Embed(
-        title=name,
-        description=description,
-        color=0x000000
-    )
+        clr=hex(0x000000)
     
     elif color.lower() == "белый":
-        embed2=disnake.Embed(
+        clr=hex(0xffffff)
+    
+    embed2=disnake.Embed(
         title=name,
         description=description,
-        color=0xffffff
-    )
-    
+        color=clr
+        )
+
     await channel2.send(embed=embed2)
 
 @bot.slash_command(guild_ids=[1097125882876923954])
-async def voicedel(ctx, voice):
+async def voicedel(inter: disnake.CommandInteraction, voice):
     vchannel = bot.get_channel(int(voice))
     await vchannel.delete()
-
-@bot.slash_command(guild_ids=[1097125882876923954])
-async def roleget(ctx, newmember = disnake.Member, *, gildd, rle):
-    gild = bot.get_guild(int(gildd))
-    role = gild.get_role(int(rle))
-    await newmember.add_roles(role)
-
-
+    membernew = inter.user.id
+    newmembermention = bot.get_user(int(membernew))
+    with open(r'C:\Users\meljn\OneDrive\Документы\testbot\commandusers.txt', 'a+', encoding='utf-8') as userfile:
+        userfile.write(f"использовал команду /voicedel : {newmembermention} \n")
+    userfile.close()
 
 @bot.slash_command()
 async def ping(inter):
@@ -237,27 +213,32 @@ async def lscom(inter, titl, message, us):
     )
 
     user = bot.get_user(int(us))
-    await user.send("👀")
     await user.send(embed=embedls)
 
 @bot.slash_command(description="Тестовая команда для проверки работы команд")
 async def bottestping(ctx, rol: disnake.Role):
-    await ctx.send(rol.id)
+    print(rol.id)
 
 @bot.slash_command(description="Тестовая команда для проверки работоспособности бота")
-async def bottestroleinfo(ctx, member: disnake.Member, *, role: disnake.Role):
-    # rle = disnake.Role(айди роли) команда для выдачи роли
+@commands.has_permissions(administrator=True)
+async def bottestroleinfo(inter: disnake.CommandInteraction, member: disnake.Member, *, role: disnake.Role):
     await member.add_roles(role)
+    membernew = inter.user.id
+    newmembermention = bot.get_user(int(membernew))
+    with open(r'C:\Users\meljn\OneDrive\Документы\testbot\commandusers.txt', 'a+', encoding='utf-8') as userfile:
+        userfile.write(f"использовал команду для выдачи роли от лица бота : {newmembermention} \n")
+    userfile.close()
 
 
 
 class OffersModal(disnake.ui.Modal):
     def __init__(self):
+        global components_offers
         components_offers = [
             disnake.ui.TextInput(
                 label="Опиши своё предложение",
                 placeholder="Опиши своё предложение максимально подробно",
-                custom_id="описани",
+                custom_id="описаниe",
                 style=TextInputStyle.paragraph,
                 max_length=300,
             ),
@@ -266,7 +247,7 @@ class OffersModal(disnake.ui.Modal):
                 placeholder="?/10",
                 custom_id="оценка",
                 style=TextInputStyle.short,
-                max_length=300,
+                max_length=2,
             ),
         ]
         super().__init__(
@@ -274,7 +255,7 @@ class OffersModal(disnake.ui.Modal):
             custom_id="create_offer",
             components=components_offers,
         )
-
+    
     # global offerwriter
     async def callback(self, inter: disnake.ModalInteraction):
         embed = disnake.Embed(
@@ -291,7 +272,7 @@ class OffersModal(disnake.ui.Modal):
             )
         
         authorbot = bot.get_user(581348510830690344)
-
+        print(components_offers)
         await authorbot.send(embed=embed)
         await inter.response.send_message(f" <@{offerwriter}>, предложение отправлено!", delete_after=5)
 
@@ -390,36 +371,69 @@ async def registration(inter: disnake.CommandInteraction, имя: str, фами�
             print(value)
 
 @bot.slash_command(guild_ids=[1051049677207912468], name="репутация", description="Узнай сколько у тебя SocialCredit")
-async def socialcredit(inter, member: disnake.Member):
-    with sqlite3.connect("servertochka.db") as dbt:
+async def socialcredit(inter: disnake.CommandInteraction, member: disnake.Member):
+    with sqlite3.connect("servertochka.db")  as dbt:
+
         cursortochka = dbt.cursor()
+        membermention = bot.get_user(int(member.id))
         mbr = str(member)
-        cursortochka.execute('SELECT COUNT(*) FROM socialcredits WHERE discordaccount = ?', (mbr,))
+        cursortochka.execute('SELECT scredits FROM socialcredits WHERE ds_account = ?', (mbr,))
         result = cursortochka.fetchone()
-        print(member)
-        for value in cursortochka.execute("SELECT * FROM socialcredits"):
-            print(value)
+        reputation = result[0] if result else 0
+        results = f"Репутация **{membermention.mention}**: **{reputation}** SocialCredits"
 
-@bot.slash_command(guild_ids=[1097125882876923954, 1051049677207912468])
+        embed = disnake.Embed(
+            title="Репутация",
+            description=results,
+            color=0x00a2ff
+        )
+        embed.set_author(
+            name=f"{member.name}",
+            icon_url=member.avatar.url
+        )
+        await inter.response.send_message(embed=embed)
+        print(member)
+
+# @bot.slash_command(guild_ids=[1051049677207912468], name="всярепутация", description="Узнай сколько у всех SocialCredit")
+# async def socialcreditfull(inter: disnake.CommandInteraction):
+#     with sqlite3.connect("servertochka.db")  as dbt:
+#         cursortochka = dbt.cursor()
+#         for value in cursortochka.execute("SELECT ds_account, scredits FROM socialcredits"):
+#             await inter.send(value)
+    
+@bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
 async def socialcreditset(inter, member: disnake.Member, credits: int):
-    global cursortochka, dbt
     with sqlite3.connect("servertochka.db") as dbt:
         cursortochka = dbt.cursor()
         mbr = str(member)
-        values = (mbr, 0)
-
+        # values = (mbr, credits)
+        global st_members
         cursortochka.execute("""CREATE TABLE IF NOT EXISTS socialcredits(
             in_db_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            discordaccount TEXT,
+            ds_account TEXT,
             scredits BIGINT
         )""")
-        print(mbr)
+        # print(mbr)
         #Доделать
-        cursortochka.execute("INSERT INTO socialcredits(discordaccount, scredits) VALUES (?, ?)", values)
+        # cursortochka.execute("INSERT INTO socialcredits(ds_account, scredits) VALUES (?, ?)", values)
+        cursortochka.execute("UPDATE socialcredits SET scredits = ? WHERE ds_account = ?", (credits, mbr))
+
+        # for i in st_members:
+        #     values = (i, 0)
+        #     cursortochka.execute("INSERT INTO socialcredits(ds_account, scredits) VALUES (?, ?)", values)
 
         dbt.commit()
 
-
-        for value in cursortochka.execute("SELECT * FROM socialcredits"):
+        for value in cursortochka.execute("SELECT ds_account, scredits FROM socialcredits"):
             print(value)
 
+@bot.slash_command(guild_ids=[1097125882876923954])
+async def membrsofst(inter):
+    global st_members
+    st_members = []
+    guild = bot.get_guild(int(1051049677207912468))
+    for member in guild.members:
+        st_members.append(str(member))
+
+    print(st_members)
