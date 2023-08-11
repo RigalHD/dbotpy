@@ -1,12 +1,20 @@
 from Dbot import bot
 import disnake
 from disnake.ext import commands
-from Dbot import cens_words
+from DbotConfig import cens_words
+from Dbot_requests import saved_message
 
-class BotEvents(commands.Cog):
+class Bot_Events(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    @bot.event
+    async def on_disconnect():
+        global saved_message
+        if saved_message:
+            await saved_message.delete()
+
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
@@ -19,3 +27,5 @@ class BotEvents(commands.Cog):
                 elif content.lower() == cens_word:
                     await message.delete()
                     await message.channel.send(f"**Как тебе не стыдно, **{message.author.mention}?")
+
+
