@@ -1,10 +1,6 @@
 import sqlite3
-from typing import Optional
 import disnake
 from disnake.ext import commands
-from disnake import TextInputStyle
-from disnake.ui import Button, View, Modal
-from disnake.interactions import MessageInteraction
 
 bot = commands.Bot(
     command_prefix="!!",
@@ -19,6 +15,8 @@ bot = commands.Bot(
 async def user_avatar(inter: disnake.CommandInteraction, user: disnake.Member):
     avatar_url = user.avatar.url
     await inter.send(avatar_url)
+
+
 
 
 
@@ -173,73 +171,7 @@ async def bottestroleinfo(inter: disnake.CommandInteraction, member: disnake.Mem
         userfile.write(f"использовал команду для выдачи роли от лица бота : {newmembermention} \n")
     userfile.close()
 
-@bot.slash_command(guild_ids=[1051049677207912468], name="репутация", description="Узнай сколько у тебя SocialCredit")
-async def socialcredit(inter: disnake.CommandInteraction, member: disnake.Member):
-    with sqlite3.connect("servertochka.db") as dbt:
 
-        cursortochka = dbt.cursor()
-        membermention = bot.get_user(int(member.id))
-        mbr = str(member)
-        cursortochka.execute('SELECT scredits FROM socialcredits WHERE ds_account = ?', (mbr,))
-        result = cursortochka.fetchone()
-        reputation = result[0] if result else 0
-        results = f"Репутация **{membermention.mention}**: **{reputation}** SocialCredits"
-
-        embed = disnake.Embed(
-            title="Репутация",
-            description=results,
-            color=0x00a2ff
-        )
-        embed.set_author(
-            name=f"{member.name}",
-            icon_url=member.avatar.url
-        )
-        await inter.response.send_message(embed=embed)
-        print(member)
-
-# @bot.slash_command(guild_ids=[1051049677207912468], name="всярепутация", description="Узнай сколько у всех SocialCredit")
-# async def socialcreditfull(inter: disnake.CommandInteraction):
-#     with sqlite3.connect("servertochka.db")  as dbt:
-#         cursortochka = dbt.cursor()
-#         for value in cursortochka.execute("SELECT ds_account, scredits FROM socialcredits"):
-#             await inter.send(value)
-    
-@bot.slash_command(guild_ids=[1051049677207912468])
-@commands.has_permissions(administrator=True)
-async def socialcreditset(inter, member: disnake.Member, credits: int):
-    with sqlite3.connect("servertochka.db") as dbt:
-        cursortochka = dbt.cursor()
-        mbr = str(member)
-        # values = (mbr, credits)
-        global st_members
-        cursortochka.execute("""
-        CREATE TABLE IF NOT EXISTS socialcredits(
-            in_db_user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ds_account TEXT,
-            scredits BIGINT 
-        )""")
-        # print(mbr)
-        # cursortochka.execute("INSERT INTO socialcredits(ds_account, scredits) VALUES (?, ?)", values)
-        cursortochka.execute("UPDATE socialcredits SET scredits = ? WHERE ds_account = ?", (credits, mbr))
-        
-        # for i in st_members:
-        #     values = (i, 0)
-        #     cursortochka.execute("INSERT INTO socialcredits(ds_account, scredits) VALUES (?, ?)", values)
-
-        dbt.commit()
-
-        for value in cursortochka.execute("SELECT ds_account, scredits FROM socialcredits"):
-            print(value)
-
-@bot.slash_command(guild_ids=[1097125882876923954])
-async def membrsofst(inter):
-    global st_members
-    st_members = []
-    guild = bot.get_guild(int(1051049677207912468))
-    for member in guild.members:
-        st_members.append(str(member))
-
-    print(st_members)
 
 # @bot.slash_command()
 # async def send_r_message(inter: disnake.CommandInteraction):
@@ -258,3 +190,6 @@ async def membrsofst(inter):
 #     )
 
 #     await ch.send(embed=embed)
+
+
+
