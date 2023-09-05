@@ -52,7 +52,7 @@ class Registration_Modal(disnake.ui.Modal):
     async def callback(self, inter: disnake.ModalInteraction):
         # user = bot.get_user(int(581348510830690344))
         embed = disnake.Embed(
-            title="Новая заявка",
+            title="Новая регистрация",
             description=f"<@{self.new_member_id}> зарегистрировался!",
             color=0x00a2ff
             )

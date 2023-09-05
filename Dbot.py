@@ -1,5 +1,5 @@
 import sqlite3
-import disnake
+import disnake 
 from disnake.ext import commands
 
 bot = commands.Bot(
@@ -16,14 +16,14 @@ async def user_avatar(inter: disnake.CommandInteraction, user: disnake.Member):
     avatar_url = user.avatar.url
     await inter.send(avatar_url)
 
+@bot.slash_command(name="clear_msgs")
+@commands.has_permissions(administrator=True)
+async def clearm(inter: disnake.CommandInteraction, amount: int):
+    await inter.channel.purge(limit= amount + 1)
+    await inter.send(f"Удалено: {amount} сообщений!", ephemeral=True)
+ 
 
 
-
-
-
-@bot.event
-async def on_ready():
-    print(f"Bot {bot.user} is ready to work!")
 
 # @bot.event
 # async def on_member_join(member):
@@ -133,6 +133,7 @@ async def propuski(inter: disnake.CommandInteraction):
 
 
 @bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
 async def voicedel(inter: disnake.CommandInteraction, voice):
     vchannel = bot.get_channel(int(voice))
     await vchannel.delete()
