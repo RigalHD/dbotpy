@@ -34,7 +34,6 @@ class DropDown(StringSelect):
             clr=0xff0000
 
         elif self.values[0] == "зелёный":
-
             clr=0x135c19   
                 
         elif self.values[0] == "жёлтый":
@@ -76,7 +75,7 @@ class DropDown_Img_Select(StringSelect):
 
     async def callback(self, inter: disnake.MessageInteraction):
         if self.values[0] == "Да":
-            await inter.response.send_modal(modal=EmbModal_img(self.channel, self.clr))
+            await inter.response.send_modal(modal=EmbModal(self.channel, self.clr, True))
 
         elif self.values[0] == "Нет":
-            await inter.response.send_modal(modal=EmbModal(self.channel, self.clr))
+            await inter.response.send_modal(modal=EmbModal(self.channel, self.clr, False))

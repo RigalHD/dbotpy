@@ -5,11 +5,13 @@ from disnake import TextInputStyle
 
 
 class EmbModal(disnake.ui.Modal):
-    def __init__(self, channel, color):
+    def __init__(self, channel, color, img_enable: bool):
         self.channel = channel
         self.color = color
         self.emb_list = []
-        global components_emb
+        self.img_enable = False
+        self.img_enable = img_enable
+
         components_emb= [
             disnake.ui.TextInput(
                 label="Название",
@@ -27,6 +29,16 @@ class EmbModal(disnake.ui.Modal):
                 max_length=3000,
             ),
         ]
+        if self.img_enable == True:
+            components_emb.append(
+                disnake.ui.TextInput(
+                label="Картинка",
+                placeholder="Вставь сюда ссылку на картинку",
+                custom_id="img_link",
+                style=TextInputStyle.paragraph,
+                max_length=3000,
+            ))
+
         super().__init__(
             title="Эмбед",
             custom_id="create_embed",
@@ -42,60 +54,70 @@ class EmbModal(disnake.ui.Modal):
             description=self.emb_list[1],
             color=self.color
             )
+        if self.img_enable == True:
+            try:
+                embed.set_image(url=self.emb_list[2])
+                await self.channel.send(embed=embed)
+                await inter.response.send_message(f"Эмбед отправлен!", ephemeral=True)
+                return
+            except disnake.errors.HTTPException:
+                modal_user = bot.get_user(int(inter.user.id))
+                await modal_user.send("При создании эмбеда возникла ошибка с ссылкой на картинку. Убедитесь, что ссылка верна")
+                return
 
         await self.channel.send(embed=embed)
         await inter.response.send_message(f"Эмбед отправлен!", ephemeral=True)
 
-class EmbModal_img(disnake.ui.Modal):
-    def __init__(self, channel, color):
-        self.channel = channel
-        self.color = color
-        self.emb_list = []
-        global components_emb
-        components_emb= [
-            disnake.ui.TextInput(
-                label="Название",
-                placeholder="Название эмбеда",
-                custom_id="название",
-                style=TextInputStyle.short,
-                max_length=100,
-            ),
+# class EmbModal_img(disnake.ui.Modal):
+#     def __init__(self, channel, color):
+#         self.channel = channel
+#         self.color = color
+#         self.emb_list = []
+#         global components_emb
+#         components_emb= [
+#             disnake.ui.TextInput(
+#                 label="Название",
+#                 placeholder="Название эмбеда",
+#                 custom_id="название",
+#                 style=TextInputStyle.short,
+#                 max_length=100,
+#             ),
             
-            disnake.ui.TextInput(
-                label="Описание",
-                placeholder="Описание эмбеда",
-                custom_id="описание",
-                style=TextInputStyle.paragraph,
-                max_length=3000,
-            ),
-            disnake.ui.TextInput(
-                label="Картинка",
-                placeholder="Вставь сюда ссылку на картинку",
-                custom_id="img_link",
-                style=TextInputStyle.paragraph,
-                max_length=3000,
-            ),
-        ]
-        super().__init__(
-            title="Эмбед",
-            custom_id="create_embed_img",
-            components=components_emb,
-        )
+#             disnake.ui.TextInput(
+#                 label="Описание",
+#                 placeholder="Описание эмбеда",
+#                 custom_id="описание",
+#                 style=TextInputStyle.paragraph,
+#                 max_length=3000,
+#             ),
+#             disnake.ui.TextInput(
+#                 label="Картинка",
+#                 placeholder="Вставь сюда ссылку на картинку",
+#                 custom_id="img_link",
+#                 style=TextInputStyle.paragraph,
+#                 max_length=3000,
+#             ),
+#         ]
+#         super().__init__(
+#             title="Эмбед",
+#             custom_id="create_embed_img",
+#             components=components_emb,
+#         )
     
-    async def callback(self, inter: disnake.ModalInteraction):
-        for key, value in inter.text_values.items():
-            self.emb_list.append(value)
+#     async def callback(self, inter: disnake.ModalInteraction):
+#         for key, value in inter.text_values.items():
+#             self.emb_list.append(value)
 
-        embed = disnake.Embed(
-            title=self.emb_list[0],
-            description=self.emb_list[1],
-            color=self.color
-            )
-        try:
-            embed.set_image(url=self.emb_list[2])
-            await self.channel.send(embed=embed)
-            await inter.response.send_message(f"Эмбед отправлен!", ephemeral=True)
-        except disnake.errors.HTTPException:
-            modal_user = bot.get_user(int(inter.user.id))
-            await modal_user.send("При создании эмбеда возникла ошибка с ссылкой на картинку. Убедитесь, что ссылка верна")
-            return
+#         embed = disnake.Embed(
+#             title=self.emb_list[0],
+#             description=self.emb_list[1],
+#             color=self.color
+#             )
+#         try:
+#             embed.set_image(url=self.emb_list[2])
+#             await self.channel.send(embed=embed)
+#             await inter.response.send_message(f"Эмбед отправлен!", ephemeral=True)
+#         except disnake.errors.HTTPException:
+#             modal_user = bot.get_user(int(inter.user.id))
+#             await modal_user.send("При создании эмбеда возникла ошибка с ссылкой на картинку. Убедитесь, что ссылка верна")
+#             return

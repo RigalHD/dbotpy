@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 from Dbot import bot
-from Dbot_Embed_Folder.DropDowns import DropDownView, DropDownView_img
+from Dbot_Embed_Folder.DropDowns import DropDownView
 
 
 class For_Embed_Writing(commands.Cog):
@@ -28,6 +28,7 @@ class For_Embed_Writing(commands.Cog):
         )
         embedf.set_image(url=imageulr)
         await channel.send(embed=embedf)
+
 
     @commands.slash_command(name = "embed")
     # @commands.slash_command(guild_ids=[1097125882876923954], name = "embed")
