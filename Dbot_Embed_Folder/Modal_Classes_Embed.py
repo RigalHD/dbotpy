@@ -82,9 +82,9 @@ class EmbModal(disnake.ui.Modal):
                 await modal_user.send("При создании эмбеда возникла ошибка с ссылкой на картинку. Убедитесь, что ссылка верна")
                 return
         if self.author_ava in self.components_emb and self.author_name in self.components_emb:
-            print(self.emb_list)
+            # print(self.emb_list)
             if self.img_enable in self.components_emb:
-                print(self.emb_list[4], self.emb_list[3])
+                # print(self.emb_list[4], self.emb_list[3])
                 self.embed.set_author(
                     name = self.emb_list[4],
                     icon_url=self.emb_list[3],
