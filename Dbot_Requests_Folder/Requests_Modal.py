@@ -112,6 +112,6 @@ class MyModal(disnake.ui.Modal):
                 return
         
         
-        await self.owner.send(embed=embed, view=newbieconfirm(self.new_member_id))  # Создаем новый экземпляр Confirm для следующих заявок
+        await self.owner.send(embed=embed, view=newbieconfirm(self.new_member_id))
         await inter.response.send_message(f"<@{self.new_member_id}> заявка отправлена!", delete_after=5)
         await new_member.send(f"Твоя заявка на рассмотрении, <@{self.new_member_id}>")

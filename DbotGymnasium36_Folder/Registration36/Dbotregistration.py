@@ -26,6 +26,7 @@ class Bot_Registaration(commands.Cog):
         # newmembermention = bot.get_user(int(membernew))
         reg_guild = bot.get_guild(inter.guild.id)
         await inter.response.send_modal(modal=Registration_Modal(membernew, reg_guild))
+
         # with open(r'C:\Users\meljn\OneDrive\Документы\testbot\users.txt', 'a+', encoding='utf-8') as userfile:
         #     userfile.write(f"{имя} {фамилия} {класс} {newmembermention} \n")
         
